@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>骨质疏松风险评估系统</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+        }
+        .slider-container {
+            margin: 20px 0;
+        }
+        .slider {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #357ab8;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        .result h2 {
+            margin-top: 0;
+        }
+        .risk-percentage {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .risk-low {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .risk-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .risk-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: #666;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .qr-code {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>骨质疏松风险评估系统</h1>
+        <p>基于多项健康指标预测您的骨质疏松风险</p>
+    </div>
+
+    <form id="osteoporosisForm">
+        <div class="form-group">
+            <label for="gender">性别</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="male" name="gender" value="male" checked>
+                    <label for="male">男性</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">女性</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="age">年龄</label>
+            <input type="number" id="age" name="age" min="18" max="120" required>
+        </div>
+
+        <div class="form-group">
+            <label for="height">身高 (厘米)</label>
+            <input type="number" id="height" name="height" min="100" max="250" required>
+        </div>
+
+        <div class="form-group">
+            <label for="weight">体重 (公斤)</label>
+            <input type="number" id="weight" name="weight" min="30" max="200" required>
+        </div>
+
+        <div class="form-group">
+            <label for="smoking">吸烟状况</label>
+            <select id="smoking" name="smoking" required>
+                <option value="none">不吸烟</option>
+                <option value="occasional">偶尔吸烟</option>
+                <option value="regular">经常吸烟</option>
+                <option value="heavy">重度吸烟</option>
+                <option value="former">已戒烟</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="alcohol">饮酒状况</label>
+            <select id="alcohol" name="alcohol" required>
+                <option value="none">不饮酒</option>
+                <option value="light">轻度饮酒(每周1-3次)</option>
+                <option value="moderate">中度饮酒(每周4-7次)</option>
+                <option value="heavy">重度饮酒(每天饮酒)</option>
+                <option value="former">已戒酒</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ethnicity">人种</label>
+            <select id="ethnicity" name="ethnicity" required>
+                <option value="asian">亚洲人</option>
+                <option value="caucasian">白种人</option>
+                <option value="african">黑种人</option>
+                <option value="other">其他</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>运动情况 (1-10分，1为最不活跃，10为最活跃)</label>
+            <div class="slider-container">
+                <input type="range" min="1" max="10" value="5" class="slider" id="activity">
+                <div class="slider-value" id="activityValue">5</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>慢性病 (可多选)</label>
+            <div class="checkbox-group">
+                <div class="checkbox-option">
+                    <input type="checkbox" id="rheumatoid" name="conditions" value="rheumatoid">
+                    <label for="rheumatoid">类风湿性关节炎</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="hyperthyroidism" name="conditions" value="hyperthyroidism">
+                    <label for="hyperthyroidism">甲状腺功能亢进</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="diabetes" name="conditions" value="diabetes">
+                    <label for="diabetes">糖尿病</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="kidney" name="conditions" value="kidney">
+                    <label for="kidney">慢性肾病</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="liver" name="conditions" value="liver">
+                    <label for="liver">慢性肝病</label>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="none" name="conditions" value="none" checked>
+                    <label for="none">无上述疾病</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="calculateBtn">评估风险</button>
+    </form>
+
+    <div class="result" id="result">
+        <h2>您的骨质疏松风险评估结果</h2>
+        <div class="risk-percentage" id="riskPercentage">0%</div>
+        <p id="riskDescription"></p>
+        <p>请注意：此评估基于统计模型，不能替代专业医疗诊断。</p>
+    </div>
+
+    <div class="qr-code">
+        <h3>扫描二维码分享此评估工具</h3>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://example.com/osteoporosis-risk" alt="QR Code">
+    </div>
+
+    <div class="disclaimer">
+        <p>免责声明：本工具提供的评估结果仅供参考，不能替代专业医疗建议。如有健康疑虑，请咨询医生。</p>
+    </div>
+
+    <script>
+        // 更新滑动条数值显示
+        const activitySlider = document.getElementById('activity');
+        const activityValue = document.getElementById('activityValue');
+        activitySlider.addEventListener('input', function() {
+            activityValue.textContent = this.value;
+        });
+
+        // 计算按钮点击事件
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            // 获取表单数据
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const age = parseInt(document.getElementById('age').value);
+            const height = parseInt(document.getElementById('height').value);
+            const weight = parseInt(document.getElementById('weight').value);
+            const smoking = document.getElementById('smoking').value;
+            const alcohol = document.getElementById('alcohol').value;
+            const ethnicity = document.getElementById('ethnicity').value;
+            const activity = parseInt(document.getElementById('activity').value);
+            
+            // 获取选中的慢性病
+            const conditions = [];
+            document.querySelectorAll('input[name="conditions"]:checked').forEach(checkbox => {
+                if (checkbox.value !== 'none') {
+                    conditions.push(checkbox.value);
+                }
+            });
+
+            // 验证输入
+            if (!age || !height || !weight) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            // 计算BMI
+            const bmi = weight / Math.pow(height / 100, 2);
+
+            // 模拟风险评估 (实际应用中应使用更复杂的模型)
+            let risk = 0;
+            
+            // 年龄因素
+            if (age >= 70) risk += 40;
+            else if (age >= 50) risk += 30;
+            else if (age >= 30) risk += 15;
+            else risk += 5;
+            
+            // 性别因素
+            if (gender === 'female') risk += 20;
+            
+            // BMI因素
+            if (bmi < 18.5) risk += 25;  // 体重过轻
+            else if (bmi < 25) risk += 10;
+            else risk += 5;
+            
+            // 吸烟因素
+            if (smoking === 'heavy') risk += 20;
+            else if (smoking === 'regular') risk += 15;
+            else if (smoking === 'occasional') risk += 10;
+            else if (smoking === 'former') risk += 5;
+            
+            // 饮酒因素
+            if (alcohol === 'heavy') risk += 15;
+            else if (alcohol === 'moderate') risk += 10;
+            else if (alcohol === 'light') risk += 5;
+            else if (alcohol === 'former') risk += 3;
+            
+            // 人种因素
+            if (ethnicity === 'asian') risk += 10;
+            else if (ethnicity === 'caucasian') risk += 5;
+            
+            // 运动因素 (1-10分，1为最不活跃)
+            risk += (10 - activity) * 2;
+            
+            // 慢性病因素
+            conditions.forEach(condition => {
+                if (condition === 'rheumatoid') risk += 15;
+                else if (condition === 'hyperthyroidism') risk += 10;
+                else risk += 5;
+            });
+            
+            // 确保风险在0-100范围内
+            risk = Math.max(0, Math.min(100, risk));
+
+            // 显示结果
+            const resultDiv = document.getElementById('result');
+            const percentageDiv = document.getElementById('riskPercentage');
+            
+            percentageDiv.textContent = Math.round(risk) + '%';
+            
+            // 根据风险级别设置样式
+            let riskClass, description;
+            if (risk < 30) {
+                riskClass = 'risk-low';
+                description = '低风险 - 继续保持健康的生活方式！';
+            } else if (risk < 60) {
+                riskClass = 'risk-medium';
+                description = '中等风险 - 建议关注骨骼健康，考虑咨询医生。';
+            } else {
+                riskClass = 'risk-high';
+                description = '高风险 - 强烈建议咨询医生并进行骨密度检查。';
+            }
+            
+            // 移除所有风险类并添加当前类
+            resultDiv.className = 'result ' + riskClass;
+            document.getElementById('riskDescription').textContent = description;
+            
+            // 显示结果
+            resultDiv.style.display = 'block';
+            
+            // 滚动到结果
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
